@@ -1,0 +1,70 @@
+MIN = 150*		(P1 + P2 + P3 + P4) + 						!Costo de producción;
+	40*         (W1 + W2 + W3 + W4) +						!Costo de trabajo;
+	500*		(H1 + H2 + H3 + H4) +						!Costo de contratar;
+	1000*		(F1 + F2 + F3 + F4) +						!Costo de despedir;
+	80*		(I1 + I2 + I3 + I4) +						!Costo de inventario;
+	120*		(B1 + B2 + B3 + B4);						!Costo de backorder;
+
+
+!*Subject To:**;
+
+
+!Restricciones de número de trabajadores;
+W0 = 40; 			!Trabajadores Iniciales;
+W1 = W0 + H1 - F1; 	!oct;
+W2 = W1 + H2 - F2; 	!nov;
+W3 = W2 + H3 - F3; 	!dic;
+W4 = W3 + H4 - F4; 	!ene;
+
+W1 = W2;
+W2 = W3;
+W3 = W4;
+
+
+!Restricciones de BackOrder;
+B0 = B1;
+B1 = B2;
+B2 = B3;
+B3 = B4;
+B4 = 0;
+
+
+
+
+
+!Retricciones de Inventario;
+I0 = I1;
+I1 = I2;
+I2 = I3;
+I3 = I4;
+I4 = 0;
+
+	!Pronósticos de demanda (lambdas);
+L1 = 181;
+L2 = 181;
+L3 = 182;
+L4 = 183;
+
+	
+I1 - B1 = I0 - B0 + P1 -L1;	!oct;
+I2 - B2 = I1 - B1 + P2 -L2;	!nov;
+I3 - B3 = I2 - B2 + P3 -L3;	!dic;
+I4 - B4 = I3 - B3 + P4 -L4;	!ene;
+
+
+Demand = 190 + 130 + 160 + 110 + 130 + 170 + 190 + 200 + 110 + 190 + 240 + 180;
+
+factorK = Demand/(250*40);
+
+!Restricciones de producción;
+P1 <= (factorK)*(22)*W1;	!oct;
+P2 <= (factorK)*(20)*W2;	!nov;
+P3 <= (factorK)*(22)*W3;	!dic;
+P4 <= (factorK)*(22)*W4;	!ene;
+
+
+
+@GIN(P1);@GIN(P2);@GIN(P3);@GIN(P4);
+@GIN(W1);@GIN(W2);@GIN(W3);@GIN(W4);
+@GIN(F1);@GIN(F2);@GIN(F3);@GIN(F4);
+@GIN(H1);@GIN(H2);@GIN(H3);@GIN(H4);
